@@ -2,8 +2,10 @@
   <div class="app">
     <router-link to="/main">主页</router-link>
     <router-link to="/login">登录</router-link>
-    counter:{{ counterStore.couter }} - {{ counterStore.doubleCount }}
-    <n-button type="info" size="tiny" @click="changeCouter"> Info </n-button>
+    counter:{{ counterStore.counter }} - {{ counterStore.doubleCount }}
+    <n-button type="info" size="tiny" @click="changeCouter">
+      修改counter
+    </n-button>
     <router-view></router-view>
   </div>
 </template>

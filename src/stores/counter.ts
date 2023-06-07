@@ -2,14 +2,14 @@ import { defineStore } from 'pinia'
 
 const useCounterStore = defineStore('counter', {
   state: () => ({
-    couter: 100
+    counter: 100
   }),
   getters: {
-    doubleCount: (state) => state.couter * 2
+    doubleCount: (state) => state.counter * 2
   },
   actions: {
     changeCouterAction(newCounter: any) {
-      this.couter = newCounter
+      this.counter = newCounter
     }
   }
 })
