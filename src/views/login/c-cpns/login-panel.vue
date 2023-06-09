@@ -79,6 +79,7 @@ import { useMessage } from 'naive-ui'
 import AccountIcon from '@/components/icons/account-icon.vue'
 import PhoneIcon from '@/components/icons/phone-icon.vue'
 import { accountLoginRequest } from '@/services/login/login'
+import useLoginStore from '@/stores/login/login'
 
 const account = reactive({
   user: {
@@ -104,15 +105,14 @@ const isRemPwd = ref(false)
 
 const formRef = ref<FormInst | null>(null)
 const message = useMessage()
+const loginStore = useLoginStore()
 function handleValidateClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(error => {
     if (!error) {
       const name = account.user.name
       const password = account.user.pwd
-      accountLoginRequest({ name, password }).then(res => {
-        console.log(res)
-      })
+      loginStore.loginAccountAction({ name, password })
       message.success('登录成功')
     } else {
       message.error('登录失败')
