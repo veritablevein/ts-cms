@@ -20,7 +20,6 @@
             label-placement="left"
             label-width="auto"
             require-mark-placement="right-hanging"
-            :validate-messages="0"
           >
             <n-form-item-row label="用户名" path="user.name">
               <n-input
@@ -79,6 +78,7 @@ import type { FormInst, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import AccountIcon from '@/components/icons/account-icon.vue'
 import PhoneIcon from '@/components/icons/phone-icon.vue'
+import { accountLoginRequest } from '@/services/login/login'
 
 const account = reactive({
   user: {
@@ -109,7 +109,10 @@ function handleValidateClick(e: MouseEvent) {
   formRef.value?.validate(error => {
     if (!error) {
       const name = account.user.name
-      const pwd = account.user.pwd
+      const password = account.user.pwd
+      accountLoginRequest({ name, password }).then(res => {
+        console.log(res)
+      })
       message.success('登录成功')
     } else {
       message.error('登录失败')

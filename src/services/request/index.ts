@@ -16,7 +16,7 @@ class MyRequest {
     )
     this.instance.interceptors.response.use(
       res => {
-        return res
+        return res.data
       },
       err => {
         return err
