@@ -23,14 +23,14 @@
           >
             <n-form-item-row label="用户名" path="user.name">
               <n-input
-                v-model:value="account.user.name"
+                v-model:value="account.name"
                 placeholder="请输入用户名"
               />
             </n-form-item-row>
             <n-form-item-row label="密码" path="user.pwd">
               <n-input
                 type="password"
-                v-model:value="account.user.pwd"
+                v-model:value="account.password"
                 placeholder="请输入密码"
               />
             </n-form-item-row>
@@ -78,14 +78,12 @@ import type { FormInst, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import AccountIcon from '@/components/icons/account-icon.vue'
 import PhoneIcon from '@/components/icons/phone-icon.vue'
-import { accountLoginRequest } from '@/services/login/login'
 import useLoginStore from '@/stores/login/login'
+import type { IAccount } from '@/types/index'
 
-const account = reactive({
-  user: {
-    name: 'coderwhy',
-    pwd: '123456'
-  }
+const account = reactive<IAccount>({
+  name: 'coderwhy',
+  password: '123456'
 })
 
 const accountRules: FormRules = {
@@ -110,8 +108,8 @@ function handleValidateClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(error => {
     if (!error) {
-      const name = account.user.name
-      const password = account.user.pwd
+      const name = account.name
+      const password = account.password
       loginStore.loginAccountAction({ name, password })
       message.success('登录成功')
     } else {
