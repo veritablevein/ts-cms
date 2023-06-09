@@ -21,13 +21,13 @@
             label-width="auto"
             require-mark-placement="right-hanging"
           >
-            <n-form-item-row label="用户名" path="user.name">
+            <n-form-item-row label="用户名" path="name">
               <n-input
                 v-model:value="account.name"
                 placeholder="请输入用户名"
               />
             </n-form-item-row>
-            <n-form-item-row label="密码" path="user.pwd">
+            <n-form-item-row label="密码" path="password">
               <n-input
                 type="password"
                 v-model:value="account.password"
@@ -87,16 +87,14 @@ const account = reactive<IAccount>({
 })
 
 const accountRules: FormRules = {
-  user: {
-    name: [
-      { required: true, message: '请输入用户名', trigger: 'blur' },
-      { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-    ],
-    pwd: [
-      { required: true, message: '请输入密码', trigger: 'blur' },
-      { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
-    ]
-  }
+  name: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+  ]
 }
 
 const isRemPwd = ref(false)
