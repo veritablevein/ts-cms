@@ -1,13 +1,11 @@
 <template>
   <div class="login">
-    <login-panel></login-panel>
+    <login-panel />
   </div>
 </template>
 
 <script setup lang="ts">
 import LoginPanel from './c-cpns/login-panel.vue'
-
-LoginPanel
 </script>
 
 <style scoped lang="less">

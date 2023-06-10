@@ -52,20 +52,38 @@
             立即登录
           </n-button>
         </n-tab-pane>
-        <n-tab-pane name="signup" tab="">
+        <n-tab-pane name="phone-signin">
           <template #tab>
             <n-icon :component="PhoneIcon" />
             手机登录
           </template>
-          <n-form>
-            <n-form-item-row label="用户名">
-              <n-input />
+          <n-form
+            ref="formRef"
+            :rules="phoneRules"
+            :model="phone"
+            label-placement="left"
+            label-width="auto"
+            require-mark-placement="right-hanging"
+          >
+            <n-form-item-row label="手机号码" path="name">
+              <n-input
+                v-model:value="phone.number"
+                placeholder="请输入手机号码"
+              />
             </n-form-item-row>
-            <n-form-item-row label="验证码">
-              <n-input />
+            <n-form-item-row label="验证码" path="password">
+              <n-input
+                v-model:value="phone.verifycode"
+                placeholder="请输入验证码"
+              />
+              <n-button class="get-btn" type="primary" size="medium">
+                发送验证码
+              </n-button>
             </n-form-item-row>
           </n-form>
-          <n-button type="primary" block secondary strong> 注册 </n-button>
+          <n-button class="phone-login-btn" type="primary" size="large">
+            立即登录
+          </n-button>
         </n-tab-pane>
       </n-tabs>
     </n-card>
@@ -73,13 +91,13 @@
 </template>
 
 <script setup lang="ts">
+import PhoneIcon from '@/components/icons/phone-icon.vue'
 import { reactive, ref, watch } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import AccountIcon from '@/components/icons/account-icon.vue'
-import PhoneIcon from '@/components/icons/phone-icon.vue'
 import useLoginStore from '@/stores/login/login'
-import type { IAccount } from '@/types/index'
+import type { IAccount, IPhone } from '@/types/index'
 import { localCache } from '@/utils/cache'
 
 const CACHE_NAME = 'name'
@@ -102,6 +120,22 @@ const accountRules: FormRules = {
   ]
 }
 
+const phone = reactive<IPhone>({
+  number: '',
+  verifycode: ''
+})
+
+const phoneRules: FormRules = {
+  number: [
+    { required: true, message: '请输入手机号', trigger: 'blur' },
+    { min: 11, max: 11, message: '请输入正确的11位手机号', trigger: 'blur' }
+  ],
+  verifycode: [
+    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { min: 4, max: 4, message: '请输入正确的验证码', trigger: 'blur' }
+  ]
+}
+
 const isRemPwd = ref<boolean>(localCache.getCache(CACHE_IS_REM_PWD) ?? false)
 watch(isRemPwd, newValue => {
   localCache.setCache(CACHE_IS_REM_PWD, newValue)
@@ -116,7 +150,7 @@ function handleValidateClick(e: MouseEvent) {
     if (!error) {
       const name = account.name
       const password = account.password
-      loginStore.loginAccountAction({ name, password }).then(res => {
+      loginStore.loginAccountAction({ name, password }).then(() => {
         if (isRemPwd.value) {
           localCache.setCache(CACHE_NAME, name)
           localCache.setCache(CACHE_PASSWORD, password)
@@ -127,7 +161,7 @@ function handleValidateClick(e: MouseEvent) {
       })
       message.success('登录成功')
     } else {
-      message.error('登录失败')
+      message.error('请检查用户名或密码')
     }
   })
 }
@@ -142,16 +176,6 @@ function handleValidateClick(e: MouseEvent) {
     margin-bottom: 15px;
   }
 
-  .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .text {
-    margin-left: 5px;
-  }
-
   .controls {
     margin-top: 12px;
     display: flex;
@@ -162,6 +186,15 @@ function handleValidateClick(e: MouseEvent) {
     margin-top: 10px;
     width: 100%;
     // --n-height: 50px !important;
+  }
+
+  .get-btn {
+    margin-left: 10px;
+  }
+
+  .phone-login-btn {
+    margin-top: 46px;
+    width: 100%;
   }
 }
 </style>
