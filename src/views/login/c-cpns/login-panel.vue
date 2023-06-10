@@ -73,17 +73,22 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import AccountIcon from '@/components/icons/account-icon.vue'
 import PhoneIcon from '@/components/icons/phone-icon.vue'
 import useLoginStore from '@/stores/login/login'
 import type { IAccount } from '@/types/index'
+import { localCache } from '@/utils/cache'
+
+const CACHE_NAME = 'name'
+const CACHE_PASSWORD = 'password'
+const CACHE_IS_REM_PWD = 'isRemPwd'
 
 const account = reactive<IAccount>({
-  name: 'coderwhy',
-  password: '123456'
+  name: localCache.getCache(CACHE_NAME) ?? '',
+  password: localCache.getCache(CACHE_PASSWORD) ?? ''
 })
 
 const accountRules: FormRules = {
@@ -97,7 +102,10 @@ const accountRules: FormRules = {
   ]
 }
 
-const isRemPwd = ref(false)
+const isRemPwd = ref<boolean>(localCache.getCache(CACHE_IS_REM_PWD) ?? false)
+watch(isRemPwd, newValue => {
+  localCache.setCache(CACHE_IS_REM_PWD, newValue)
+})
 
 const formRef = ref<FormInst | null>(null)
 const message = useMessage()
@@ -108,7 +116,15 @@ function handleValidateClick(e: MouseEvent) {
     if (!error) {
       const name = account.name
       const password = account.password
-      loginStore.loginAccountAction({ name, password })
+      loginStore.loginAccountAction({ name, password }).then(res => {
+        if (isRemPwd.value) {
+          localCache.setCache(CACHE_NAME, name)
+          localCache.setCache(CACHE_PASSWORD, password)
+        } else {
+          localCache.removeCache(CACHE_NAME)
+          localCache.removeCache(CACHE_PASSWORD)
+        }
+      })
       message.success('登录成功')
     } else {
       message.error('登录失败')

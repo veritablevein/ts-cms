@@ -4,7 +4,10 @@
       <n-layout has-sider class="main-content">
         <n-layout-sider class="aside"> aside </n-layout-sider>
         <n-layout class="right-content">
-          <n-layout-header class="header">header</n-layout-header>
+          <n-layout-header class="header">
+            header
+            <n-button @click="handelExitClick">退出</n-button>
+          </n-layout-header>
           <n-layout-content class="main"> main </n-layout-content>
           <n-layout-footer class="footer">footer</n-layout-footer>
         </n-layout>
@@ -13,7 +16,16 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { LOGIN_TOKEN } from '@/global/constants'
+import router from '@/router'
+import { localCache } from '@/utils/cache'
+
+function handelExitClick() {
+  localCache.removeCache(LOGIN_TOKEN)
+  router.push('/login')
+}
+</script>
 
 <style lang="less" scope>
 .main {
