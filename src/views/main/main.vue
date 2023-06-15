@@ -2,7 +2,19 @@
   <div class="main">
     <n-space vertical size="large">
       <n-layout has-sider class="main-content">
-        <n-layout-sider class="aside"> aside </n-layout-sider>
+        <n-layout-sider
+          class="aside"
+          bordered
+          collapse-mode="width"
+          :collapsed-width="64"
+          :width="210"
+          :collapsed="collapsed"
+          show-trigger
+          @collapse="collapsed = true"
+          @expand="collapsed = false"
+        >
+          <main-menu :collapsed="collapsed"></main-menu>
+        </n-layout-sider>
         <n-layout class="right-content">
           <n-layout-header class="header">
             header
@@ -20,11 +32,15 @@
 import { LOGIN_TOKEN } from '@/global/constants'
 import router from '@/router'
 import { localCache } from '@/utils/cache'
+import MainMenu from '@/components/main-menu/main-menu.vue'
+import { ref } from 'vue'
 
 function handelExitClick() {
   localCache.removeCache(LOGIN_TOKEN)
   router.push('/login')
 }
+
+const collapsed = ref(false)
 </script>
 
 <style lang="less" scope>
@@ -40,7 +56,7 @@ function handelExitClick() {
       height: 100%;
 
       .aside {
-        background-color: salmon;
+        background: var(--n-color);
       }
 
       .header {

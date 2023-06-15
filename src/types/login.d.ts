@@ -8,7 +8,7 @@ export interface IPhone {
   verifycode: string
 }
 
-export interface userInfo {
+export interface IUserInfo {
   id?: number
   name?: string
   realname?: string
@@ -16,11 +16,11 @@ export interface userInfo {
   enable?: number
   createAt?: string
   updateAt?: string
-  role?: Role
-  department?: Department
+  role?: IRole
+  department?: IDepartment
 }
 
-export interface Role {
+export interface IRole {
   id: number
   name: string
   intro: string
@@ -28,11 +28,20 @@ export interface Role {
   updateAt: string
 }
 
-export interface Department {
+export interface IDepartment {
   id: number
   name: string
   parentId: any
   createAt: string
   updateAt: string
   leader: string
+}
+
+export type IUserMenus = IUserMenusItem[]
+
+export interface IUserMenusItem {
+  id: string
+  name: string
+  icon: string
+  children?: IUserMenus
 }

@@ -1,25 +1,25 @@
-import { LOGIN_TOKEN } from '@/global/constants'
+import { LOGIN_TOKEN, USER_INFO, USER_MENUS } from '@/global/constants'
 import router from '@/router'
 import {
   accountLoginRequest,
   getUserInfoById,
   getUserMenusByRoleId
 } from '@/services/login/login'
-import type { IAccount } from '@/types'
+import type { IAccount, IUserInfo, IUserMenus } from '@/types'
 import { localCache } from '@/utils/cache'
 import { defineStore } from 'pinia'
 
 interface ILoginState {
   token: string
-  userInfo: any
-  userMenus: any
+  userInfo: IUserInfo
+  userMenus: IUserMenus
 }
 
 const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
     token: localCache.getCache(LOGIN_TOKEN) ?? '',
-    userInfo: {},
-    userMenus: []
+    userInfo: localCache.getCache(USER_INFO) ?? {},
+    userMenus: localCache.getCache(USER_MENUS) ?? []
   }),
   actions: {
     async loginAccountAction(account: IAccount) {
@@ -31,10 +31,15 @@ const useLoginStore = defineStore('login', {
       localCache.setCache(LOGIN_TOKEN, this.token)
 
       const userInfoResult = await getUserInfoById(id)
-      this.userInfo = userInfoResult.data
+      const userInfo = userInfoResult.data
+      this.userInfo = userInfo
 
-      const userMenusResult = await getUserMenusByRoleId(this.userInfo.role.id)
-      this.userMenus = userMenusResult.data
+      const userMenusResult = await getUserMenusByRoleId(this.userInfo.role!.id)
+      const userMenus = userMenusResult.data
+      this.userMenus = userMenus
+
+      localCache.setCache('userInfo', userInfo)
+      localCache.setCache('userMenus', userMenus)
 
       router.push('/main')
     }

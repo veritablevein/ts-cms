@@ -49,5 +49,6 @@ function handleModeChange(value: boolean) {
   position: fixed;
   top: 20px;
   right: 20px;
+  z-index: 9;
 }
 </style>
