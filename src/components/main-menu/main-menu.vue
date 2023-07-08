@@ -46,7 +46,7 @@ function renderIcon(icon: string) {
   return () => h(NIcon, null, { default: () => h(iconComponent) })
 }
 
-const defaultExpandedKeys = ['fish', 'braise']
+const defaultExpandedKeys = [38, 1]
 
 const props = defineProps(['collapsed'])
 

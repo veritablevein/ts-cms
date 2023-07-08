@@ -9,7 +9,6 @@
           :collapsed-width="64"
           :width="210"
           :collapsed="collapsed"
-          show-trigger
           @collapse="collapsed = true"
           @expand="collapsed = false"
         >
@@ -17,8 +16,14 @@
         </n-layout-sider>
         <n-layout class="right-content">
           <n-layout-header class="header">
-            header
-            <n-button @click="handelExitClick">退出</n-button>
+            <main-header
+              :collapsed="collapsed"
+              @fold-change="
+                isFold => {
+                  collapsed = isFold
+                }
+              "
+            ></main-header>
           </n-layout-header>
           <n-layout-content class="main"> main </n-layout-content>
           <n-layout-footer class="footer">footer</n-layout-footer>
@@ -29,16 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import { LOGIN_TOKEN } from '@/global/constants'
-import router from '@/router'
-import { localCache } from '@/utils/cache'
 import MainMenu from '@/components/main-menu/main-menu.vue'
+import MainHeader from '@/components/main-header/main-header.vue'
 import { ref } from 'vue'
-
-function handelExitClick() {
-  localCache.removeCache(LOGIN_TOKEN)
-  router.push('/login')
-}
 
 const collapsed = ref(false)
 </script>
@@ -59,19 +57,24 @@ const collapsed = ref(false)
         background: var(--n-color);
       }
 
-      .header {
-        height: 24px;
-        background-color: sandybrown;
-      }
+      .n-layout-scroll-container {
+        display: flex;
+        flex-direction: column;
 
-      .main {
-        height: calc(100% - 24px - 24px);
-        background-color: skyblue;
-      }
+        .header {
+          display: flex;
+          align-items: center;
+          background: var(--n-color);
+        }
 
-      .footer {
-        height: 24px;
-        background-color: teal;
+        .main {
+          flex: 1;
+          background: var(--n-color);
+        }
+
+        .footer {
+          background-color: teal;
+        }
       }
     }
   }
