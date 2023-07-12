@@ -7,6 +7,7 @@ import {
 } from '@/services/login/login'
 import type { IAccount, IUserInfo, IUserMenus } from '@/types'
 import { localCache } from '@/utils/cache'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 import { defineStore } from 'pinia'
 
 interface ILoginState {
@@ -40,6 +41,9 @@ const useLoginStore = defineStore('login', {
 
       localCache.setCache('userInfo', userInfo)
       localCache.setCache('userMenus', userMenus)
+
+      const routes = mapMenusToRoutes(userMenus)
+      routes.forEach(route => router.addRoute('main', route))
 
       router.push('/main')
     }
