@@ -32,11 +32,10 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
 import { NIcon } from 'naive-ui'
-import AccountIcon from '../icons/account-icon.vue'
-import type { Component } from 'vue'
 import { defineAsyncComponent, h } from 'vue'
 import useLoginStore from '@/stores/login/login'
 import type { IUserMenus } from '@/types'
+import { RouterLink } from 'vue-router'
 
 function renderIcon(icon: string) {
   if (!icon) return undefined
@@ -52,19 +51,29 @@ const props = defineProps(['collapsed'])
 
 const loginStore = useLoginStore()
 const userMenus: IUserMenus = loginStore.userMenus
-const menuOptions: MenuOption[] = userMenus.map(item => ({
-  label: item.name,
-  key: item.id,
-  icon: renderIcon(item.icon.split('-icon-')[1]),
-  children: item.children ? expandChildren(item.children) : undefined
-}))
+const menuOptions: MenuOption[] = expandChildren(userMenus)
 
 function expandChildren(children: IUserMenus): MenuOption[] {
   return children.map(child => ({
-    label: child.name,
+    label: () => {
+      return child.children && child.children[0]?.url
+        ? child.name
+        : h(
+            RouterLink,
+            {
+              to: {
+                path: child.url
+              }
+            },
+            { default: () => child.name }
+          )
+    },
     key: child.id,
-    icon: renderIcon(child.icon),
-    children: child.children ? expandChildren(child.children) : undefined
+    icon: renderIcon(child.icon?.split('-icon-')[1]),
+    children:
+      child.children && child.children[0]?.url
+        ? expandChildren(child.children)
+        : undefined
   }))
 }
 </script>

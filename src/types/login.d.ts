@@ -43,5 +43,6 @@ export interface IUserMenusItem {
   id: string
   name: string
   icon: string
+  url: string
   children?: IUserMenus
 }

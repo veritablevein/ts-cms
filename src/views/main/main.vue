@@ -25,7 +25,9 @@
               "
             ></main-header>
           </n-layout-header>
-          <n-layout-content class="main"> main </n-layout-content>
+          <n-layout-content class="main">
+            <router-view></router-view>
+          </n-layout-content>
           <n-layout-footer class="footer">footer</n-layout-footer>
         </n-layout>
       </n-layout>
