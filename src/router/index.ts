@@ -1,6 +1,7 @@
 import { LOGIN_TOKEN } from '@/global/constants'
 import { localCache } from '@/utils/cache'
 import { firstMenu } from '@/utils/map-menus'
+import { createDiscreteApi } from 'naive-ui'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
@@ -26,7 +27,15 @@ const router = createRouter({
   ]
 })
 
+const { loadingBar } = createDiscreteApi(['loadingBar'], {
+  loadingBarProviderProps: {
+    themeOverrides: {
+      colorLoading: '#63E2B7FF'
+    }
+  }
+})
 router.beforeEach(to => {
+  loadingBar.start()
   const token = localCache.getCache(LOGIN_TOKEN)
   if (to.path.startsWith('/main') && !token) {
     return '/login'
@@ -35,6 +44,10 @@ router.beforeEach(to => {
   if (to.path === '/main') {
     return firstMenu.url
   }
+})
+
+router.afterEach(to => {
+  loadingBar.finish()
 })
 
 export default router

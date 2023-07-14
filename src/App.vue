@@ -14,9 +14,11 @@
           <n-icon :component="LightModeIcon" />
         </template>
       </n-switch>
-      <n-message-provider>
-        <router-view></router-view>
-      </n-message-provider>
+      <n-loading-bar-provider>
+        <n-message-provider>
+          <router-view></router-view>
+        </n-message-provider>
+      </n-loading-bar-provider>
     </n-config-provider>
   </div>
 </template>
