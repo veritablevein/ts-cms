@@ -5,9 +5,9 @@ import 'normalize.css'
 import './assets/style/index.less'
 
 import router from './router'
-import pinia from './stores'
+import store from './stores'
 
 const app = createApp(App)
+app.use(store)
 app.use(router)
-app.use(pinia)
 app.mount('#app')

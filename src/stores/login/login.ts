@@ -18,9 +18,9 @@ interface ILoginState {
 
 const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
-    token: localCache.getCache(LOGIN_TOKEN) ?? '',
-    userInfo: localCache.getCache(USER_INFO) ?? {},
-    userMenus: localCache.getCache(USER_MENUS) ?? []
+    token: '',
+    userInfo: {},
+    userMenus: []
   }),
   actions: {
     async loginAccountAction(account: IAccount) {
@@ -46,6 +46,20 @@ const useLoginStore = defineStore('login', {
       routes.forEach(route => router.addRoute('main', route))
 
       router.push('/main')
+    },
+
+    loadLocalCacheAction() {
+      const token = localCache.getCache(LOGIN_TOKEN)
+      const userInfo = localCache.getCache(USER_INFO)
+      const userMenus = localCache.getCache(USER_MENUS)
+      if (token && userInfo && userMenus) {
+        this.token = token
+        this.userInfo = userInfo
+        this.userMenus = userMenus
+
+        const routes = mapMenusToRoutes(userMenus)
+        routes.forEach(route => router.addRoute('main', route))
+      }
     }
   }
 })
