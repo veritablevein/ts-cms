@@ -24,6 +24,8 @@
         :collapsed="props.collapsed"
         :collapsed-width="64"
         :collapsed-icon-size="22"
+        :value="defaultActivated"
+        @update:value="handleUpdateValue"
       />
     </n-scrollbar>
   </div>
@@ -32,10 +34,11 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
 import { NIcon } from 'naive-ui'
-import { defineAsyncComponent, h } from 'vue'
+import { defineAsyncComponent, h, ref } from 'vue'
 import useLoginStore from '@/stores/login/login'
 import type { IUserMenus } from '@/types'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
+import { mapPathToMenu } from '@/utils/map-menus'
 
 function renderIcon(icon: string) {
   if (!icon) return undefined
@@ -75,6 +78,14 @@ function expandChildren(children: IUserMenus): MenuOption[] {
         ? expandChildren(child.children)
         : undefined
   }))
+}
+
+const route = useRoute()
+const pathMenu = mapPathToMenu(route.path, userMenus)
+const defaultActivated = ref(pathMenu.id)
+
+function handleUpdateValue(value: string) {
+  defaultActivated.value = value
 }
 </script>
 
