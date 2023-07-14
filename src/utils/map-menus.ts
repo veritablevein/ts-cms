@@ -24,7 +24,12 @@ export function mapMenusToRoutes(userMenus: any[]) {
   for (const menu of userMenus) {
     for (const submenu of menu.children) {
       const route = localRoutes.find(item => item.path === submenu.url)
-      if (route) routes.push(route)
+      if (route) {
+        if (!routes.find(item => item.path === menu.url)) {
+          routes.push({ path: menu.url, redirect: route.path })
+        }
+        routes.push(route)
+      }
 
       if (!firstMenu && route) firstMenu = submenu
     }
@@ -38,4 +43,22 @@ export function mapPathToMenu(path: string, userMenus: any[]) {
       if (submenu.url === path) return submenu
     }
   }
+}
+
+interface IBreadcrumb {
+  name: string
+  path: string
+}
+
+export function mapPathToBreadcrumb(path: string, userMenus: any[]) {
+  const breadcrumb: IBreadcrumb[] = []
+  for (const menu of userMenus) {
+    for (const submenu of menu.children) {
+      if (submenu.url === path) {
+        breadcrumb.push({ name: menu.name, path: menu.url })
+        breadcrumb.push({ name: submenu.name, path: submenu.url })
+      }
+    }
+  }
+  return breadcrumb
 }

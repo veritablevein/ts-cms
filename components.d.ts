@@ -15,6 +15,8 @@ declare module 'vue' {
     ExpandIcon: typeof import('./src/components/icons/expand-icon.vue')['default']
     FoldIcon: typeof import('./src/components/icons/fold-icon.vue')['default']
     GoodsIcon: typeof import('./src/components/icons/goods-icon.vue')['default']
+    HeaderCrumb: typeof import('./src/components/main-header/c-cpns/header-crumb.vue')['default']
+    HeaderCrumbs: typeof import('./src/components/main-header/c-cpns/header-crumbs.vue')['default']
     HeaderInfo: typeof import('./src/components/main-header/c-cpns/header-info.vue')['default']
     InfoIcon: typeof import('./src/components/icons/info-icon.vue')['default']
     LightModeIcon: typeof import('./src/components/icons/light-mode-icon.vue')['default']

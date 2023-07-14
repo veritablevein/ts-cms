@@ -3,11 +3,7 @@
     <n-icon size="24" class="fold" @click="handleMenuIconClick">
       <component :is="isFold ? ExpandIcon : FoldIcon" />
     </n-icon>
-    <n-breadcrumb class="breadcrumb">
-      <n-breadcrumb-item> 北京总行</n-breadcrumb-item>
-      <n-breadcrumb-item> 天津分行</n-breadcrumb-item>
-      <n-breadcrumb-item> 平山道支行</n-breadcrumb-item>
-    </n-breadcrumb>
+    <header-crumb></header-crumb>
     <header-info></header-info>
   </div>
 </template>
@@ -17,6 +13,7 @@ import FoldIcon from '../icons/fold-icon.vue'
 import ExpandIcon from '../icons/expand-icon.vue'
 import HeaderInfo from './c-cpns/header-info.vue'
 import { ref } from 'vue'
+import HeaderCrumb from './c-cpns/header-crumb.vue'
 
 const props = defineProps(['collapsed'])
 const emit = defineEmits(['foldChange'])
@@ -38,9 +35,10 @@ function handleMenuIconClick() {
     width: 25px;
     margin-left: 10px;
     margin-right: 10px;
+    cursor: pointer;
   }
 
-  .breadcrumb {
+  .header-crumb {
     flex: 1;
   }
 }
