@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <n-config-provider :theme="theme">
+    <n-config-provider :theme="theme" :locale="zhCN" :date-locale="dateZhCN">
       <n-global-style />
       <n-switch
         v-model:value="isDarkMode"
@@ -27,6 +27,7 @@
 import { darkTheme } from 'naive-ui'
 import { ref } from 'vue'
 import type { GlobalTheme } from 'naive-ui'
+import { zhCN, dateZhCN } from 'naive-ui'
 import DarkModeIcon from '@/components/icons/dark-mode-icon.vue'
 import LightModeIcon from '@/components/icons/light-mode-icon.vue'
 

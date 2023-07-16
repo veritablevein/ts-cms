@@ -93,6 +93,8 @@ const defaultActivated = computed(() => {
 }
 
 .side-header {
+  padding: 6px;
+
   display: flex;
   align-items: center;
   justify-content: center;
