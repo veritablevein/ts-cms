@@ -14,10 +14,12 @@ export interface IUserInfo {
   realname?: string
   cellphone?: number
   enable?: number
+  role?: IRole
+  roleId?: number
+  department?: IDepartment
+  departmentId?: number
   createAt?: string
   updateAt?: string
-  role?: IRole
-  department?: IDepartment
 }
 
 export interface IRole {
@@ -45,4 +47,9 @@ export interface IUserMenusItem {
   icon: string
   url: string
   children?: IUserMenus
+}
+
+export interface ISystemState {
+  usersList: IUserInfo[]
+  usersTotalCount: number
 }
