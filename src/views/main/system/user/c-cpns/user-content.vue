@@ -14,6 +14,8 @@
         :pagination="pagination"
         :row-key="rowKey"
         @update:checked-row-keys="handleCheck"
+        @update:page="handlePageChange"
+        @update:page-size="handlePageSizeChange"
       />
     </n-card>
   </div>
@@ -22,18 +24,13 @@
 <script setup lang="ts">
 import useSystemStore from '@/stores/main/system/system'
 import type { IUserInfo } from '@/types'
-import {
-  NButton,
-  type DataTableColumns,
-  type DataTableRowKey,
-  NIcon,
-  NTag
-} from 'naive-ui'
-import { h, ref } from 'vue'
-import EditIcon from '@/components/icons/edit-icon.vue'
-import DeleteIcon from '@/components/icons/delete-icon.vue'
+import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
+import { NButton, NIcon, NTag } from 'naive-ui'
+import { h, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
+import EditIcon from '@/components/icons/edit-icon.vue'
+import DeleteIcon from '@/components/icons/delete-icon.vue'
 
 const systemStore = useSystemStore()
 systemStore.postUsersListAction()
@@ -150,7 +147,26 @@ const createColumns = (): DataTableColumns<IUserInfo> => [
 ]
 
 const columns = createColumns()
-const pagination = false as const
+
+const paginationReactive = reactive({
+  page: 1,
+  pageSizes: [5, 10, 20, 30],
+  pageSize: 5,
+  showSizePicker: true,
+  showQuickJumper: true,
+  prefix({ itemCount }: { itemCount: number }) {
+    return `共 ${itemCount} 条`
+  }
+})
+const pagination = paginationReactive
+
+function handlePageChange(page: number) {
+  paginationReactive.page = page
+}
+
+function handlePageSizeChange(pageSize: number) {
+  paginationReactive.pageSize = pageSize
+}
 </script>
 
 <style scoped lang="less">

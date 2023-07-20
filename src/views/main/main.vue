@@ -28,7 +28,6 @@
           <n-layout-content class="main">
             <router-view></router-view>
           </n-layout-content>
-          <n-layout-footer class="footer">footer</n-layout-footer>
         </n-layout>
       </n-layout>
     </n-space>
@@ -72,10 +71,6 @@ const collapsed = ref(false)
         .main {
           flex: 1;
           background: var(--n-color);
-        }
-
-        .footer {
-          background-color: teal;
         }
       }
     }
