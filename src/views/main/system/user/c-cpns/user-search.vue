@@ -51,7 +51,7 @@
           </n-icon>
           重置
         </n-button>
-        <n-button type="primary">
+        <n-button type="primary" @click="handleQueryClick">
           <n-icon>
             <search-icon />
           </n-icon>
@@ -78,12 +78,20 @@ const searchForm = reactive({
   createAt: null
 })
 
+const emit = defineEmits(['queryClick', 'resetClick'])
+
 function handleResetClick() {
   searchForm.name = ''
   searchForm.realname = ''
   searchForm.cellphone = ''
   searchForm.enable = 1
   searchForm.createAt = null
+
+  emit('resetClick')
+}
+
+function handleQueryClick() {
+  emit('queryClick', searchForm)
 }
 </script>
 

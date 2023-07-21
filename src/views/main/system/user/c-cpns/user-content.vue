@@ -11,12 +11,22 @@
         :single-line="false"
         :columns="columns"
         :data="usersList"
-        :pagination="pagination"
         :row-key="rowKey"
         @update:checked-row-keys="handleCheck"
+      />
+      <n-pagination
+        v-model:page="page"
+        v-model:page-size="pageSize"
+        :page-sizes="[5, 10, 20, 30, 40, 50]"
+        :display-order="['size-picker', 'pages', 'quick-jumper']"
+        :item-Count="usersTotalCount"
+        show-size-picker
+        show-quick-jumper
         @update:page="handlePageChange"
         @update:page-size="handlePageSizeChange"
-      />
+      >
+        <template #prefix="{ itemCount }"> 共 {{ itemCount }} 页 </template>
+      </n-pagination>
     </n-card>
   </div>
 </template>
@@ -33,9 +43,13 @@ import EditIcon from '@/components/icons/edit-icon.vue'
 import DeleteIcon from '@/components/icons/delete-icon.vue'
 
 const systemStore = useSystemStore()
-systemStore.postUsersListAction()
 
-const { usersList } = storeToRefs(systemStore)
+const page = ref(1)
+const pageSize = ref(10)
+
+fetchUsersListData()
+
+const { usersList, usersTotalCount } = storeToRefs(systemStore)
 
 const rowKey = (row: IUserInfo) => row.id
 const checkedRowKeysRef = ref<DataTableRowKey[]>([])
@@ -148,29 +162,37 @@ const createColumns = (): DataTableColumns<IUserInfo> => [
 
 const columns = createColumns()
 
-const paginationReactive = reactive({
-  page: 1,
-  pageSizes: [5, 10, 20, 30],
-  pageSize: 5,
-  showSizePicker: true,
-  showQuickJumper: true,
-  prefix({ itemCount }: { itemCount: number }) {
-    return `共 ${itemCount} 条`
-  }
-})
-const pagination = paginationReactive
-
-function handlePageChange(page: number) {
-  paginationReactive.page = page
+function handlePageChange() {
+  fetchUsersListData()
 }
 
-function handlePageSizeChange(pageSize: number) {
-  paginationReactive.pageSize = pageSize
+function handlePageSizeChange() {
+  fetchUsersListData()
 }
+
+function fetchUsersListData(formData: any = {}) {
+  const size = pageSize.value
+  const offset = (page.value - 1) * size
+  const info = { size, offset }
+
+  const queryInfo = { ...info, ...formData }
+  queryInfo.createAt = queryInfo.createAt?.map((item: any) =>
+    new Date(item + 28800000).toISOString()
+  )
+  systemStore.postUsersListAction(queryInfo)
+}
+
+defineExpose({ fetchUsersListData })
 </script>
 
 <style scoped lang="less">
 .content {
   padding: 0 20px;
+
+  .n-pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
 }
 </style>
