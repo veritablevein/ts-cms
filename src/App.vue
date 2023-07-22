@@ -15,9 +15,9 @@
         </template>
       </n-switch>
       <n-loading-bar-provider>
-        <n-message-provider>
-          <router-view></router-view>
-        </n-message-provider>
+        <n-dialog-provider>
+          <n-message-provider> <router-view></router-view> </n-message-provider>
+        </n-dialog-provider>
       </n-loading-bar-provider>
     </n-config-provider>
   </div>

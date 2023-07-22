@@ -1,5 +1,6 @@
 import {
   deleteUserById,
+  editUserData,
   newUserData,
   postUserListData
 } from '@/services/main/system/system'
@@ -26,6 +27,11 @@ const useSystemStore = defineStore('system', {
     async newUserDataAction(userInfo: any) {
       const newResult = await newUserData(userInfo)
       console.log(newResult)
+      this.postUsersListAction({ size: 10, offset: 0 })
+    },
+    async editUserDataAction(id: number, userInfo: any) {
+      const editResult = await editUserData(id, userInfo)
+      console.log(editResult)
       this.postUsersListAction({ size: 10, offset: 0 })
     }
   }

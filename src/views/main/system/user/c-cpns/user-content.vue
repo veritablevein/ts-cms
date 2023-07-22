@@ -37,14 +37,15 @@
 import useSystemStore from '@/stores/main/system/system'
 import type { IUserInfo } from '@/types'
 import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
-import { NButton, NIcon, NTag } from 'naive-ui'
+import { NButton, NIcon, NTag, useDialog } from 'naive-ui'
 import { h, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 import EditIcon from '@/components/icons/edit-icon.vue'
 import DeleteIcon from '@/components/icons/delete-icon.vue'
 
-const emit = defineEmits(['newClick'])
+const dialog = useDialog()
+const emit = defineEmits(['newClick', 'editClick'])
 
 const systemStore = useSystemStore()
 
@@ -139,7 +140,7 @@ const createColumns = (): DataTableColumns<IUserInfo> => [
               marginRight: '6px'
             },
             renderIcon: () => h(NIcon, null, { default: () => h(EditIcon) }),
-            onClick: () => ''
+            onClick: () => emit('editClick', row)
           },
           { default: () => '编辑' }
         ),
@@ -154,7 +155,17 @@ const createColumns = (): DataTableColumns<IUserInfo> => [
               marginLeft: '6px'
             },
             renderIcon: () => h(NIcon, null, { default: () => h(DeleteIcon) }),
-            onClick: () => systemStore.deleteUserByIdAction(row.id!)
+            onClick: () => {
+              dialog.warning({
+                title: '警告',
+                content: '确定删除用户吗？',
+                positiveText: '确定',
+                negativeText: '算了',
+                onPositiveClick: () => {
+                  systemStore.deleteUserByIdAction(row.id!)
+                }
+              })
+            }
           },
           { default: () => '删除' }
         )

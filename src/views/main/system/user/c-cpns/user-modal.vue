@@ -27,7 +27,7 @@
             placeholder="请输入真实姓名"
           />
         </n-form-item>
-        <n-form-item label="密码" path="password">
+        <n-form-item v-if="isNewRef" label="密码" path="password">
           <n-input
             v-model:value="modalForm.password"
             placeholder="请输入密码"
@@ -68,13 +68,27 @@ import useMainStore from '@/stores/main/main'
 import { storeToRefs } from 'pinia'
 import useSystemStore from '@/stores/main/system/system'
 
+const isNewRef = ref(true)
+const editForm = ref()
 const showModal = ref(false)
-function setShowModal() {
+function setShowModal(isNew: boolean = true, rowData?: any) {
   showModal.value = true
+  isNewRef.value = isNew
+  if (!isNew && rowData) {
+    for (const key in modalForm) {
+      modalForm[key] = rowData[key]
+    }
+    editForm.value = rowData
+  } else {
+    for (const key in modalForm) {
+      modalForm[key] = null
+    }
+    editForm.value = null
+  }
 }
 defineExpose({ setShowModal })
 
-const modalForm = reactive({
+const modalForm = reactive<any>({
   name: '',
   realname: '',
   password: '',
@@ -100,7 +114,11 @@ const departmentOptions = computed(() => entireToOptions(entireDepartments))
 
 const systemStore = useSystemStore()
 function handleConfirmClick() {
-  systemStore.newUserDataAction(modalForm)
+  if (!isNewRef.value && editForm.value) {
+    systemStore.editUserDataAction(editForm.value.id, modalForm)
+  } else {
+    systemStore.newUserDataAction(modalForm)
+  }
 }
 function handleCancelClick() {}
 </script>

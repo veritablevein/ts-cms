@@ -4,7 +4,11 @@
       @reset-click="handleResetClick"
       @query-click="handleQueryClick"
     />
-    <user-content ref="contentRef" @new-click="handleNewClick" />
+    <user-content
+      ref="contentRef"
+      @new-click="handleNewClick"
+      @edit-click="handleEditClick"
+    />
     <user-modal ref="modalRef" />
   </div>
 </template>
@@ -26,6 +30,10 @@ function handleQueryClick(formData: any) {
 const modalRef = ref<InstanceType<typeof UserModal>>()
 function handleNewClick() {
   modalRef.value?.setShowModal()
+}
+
+function handleEditClick(rowData: any) {
+  modalRef.value?.setShowModal(false, rowData)
 }
 </script>
 
