@@ -74,7 +74,7 @@ const searchForm = reactive({
   name: '',
   realname: '',
   cellphone: '',
-  enable: 1,
+  enable: null,
   createAt: null
 })
 
@@ -84,7 +84,7 @@ function handleResetClick() {
   searchForm.name = ''
   searchForm.realname = ''
   searchForm.cellphone = ''
-  searchForm.enable = 1
+  searchForm.enable = null
   searchForm.createAt = null
 
   emit('resetClick')

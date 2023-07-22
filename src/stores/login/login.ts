@@ -9,6 +9,7 @@ import type { IAccount, IUserInfo, IUserMenus } from '@/types'
 import { localCache } from '@/utils/cache'
 import { mapMenusToRoutes } from '@/utils/map-menus'
 import { defineStore } from 'pinia'
+import useMainStore from '../main/main'
 
 interface ILoginState {
   token: string
@@ -42,6 +43,9 @@ const useLoginStore = defineStore('login', {
       localCache.setCache('userInfo', userInfo)
       localCache.setCache('userMenus', userMenus)
 
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
+
       const routes = mapMenusToRoutes(userMenus)
       routes.forEach(route => router.addRoute('main', route))
 
@@ -56,6 +60,9 @@ const useLoginStore = defineStore('login', {
         this.token = token
         this.userInfo = userInfo
         this.userMenus = userMenus
+
+        const mainStore = useMainStore()
+        mainStore.fetchEntireDataAction()
 
         const routes = mapMenusToRoutes(userMenus)
         routes.forEach(route => router.addRoute('main', route))

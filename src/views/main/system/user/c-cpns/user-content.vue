@@ -4,7 +4,9 @@
       <template #header>
         <n-space justify="space-between">
           <h3>用户列表</h3>
-          <n-button type="primary"> 新建数据 </n-button>
+          <n-button type="primary" @click="handleNewUserClick">
+            新建数据
+          </n-button>
         </n-space>
       </template>
       <n-data-table
@@ -41,6 +43,8 @@ import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 import EditIcon from '@/components/icons/edit-icon.vue'
 import DeleteIcon from '@/components/icons/delete-icon.vue'
+
+const emit = defineEmits(['newClick'])
 
 const systemStore = useSystemStore()
 
@@ -96,7 +100,7 @@ const createColumns = (): DataTableColumns<IUserInfo> => [
       return h(
         NTag,
         {
-          type: row.enable ? 'info' : 'error'
+          type: row.enable ? 'success' : 'error'
         },
         {
           default: () => (row.enable ? '启用' : '禁用')
@@ -150,7 +154,7 @@ const createColumns = (): DataTableColumns<IUserInfo> => [
               marginLeft: '6px'
             },
             renderIcon: () => h(NIcon, null, { default: () => h(DeleteIcon) }),
-            onClick: () => ''
+            onClick: () => systemStore.deleteUserByIdAction(row.id!)
           },
           { default: () => '删除' }
         )
@@ -183,6 +187,10 @@ function fetchUsersListData(formData: any = {}) {
 }
 
 defineExpose({ fetchUsersListData })
+
+function handleNewUserClick() {
+  emit('newClick')
+}
 </script>
 
 <style scoped lang="less">
