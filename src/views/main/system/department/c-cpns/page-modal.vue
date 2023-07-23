@@ -4,7 +4,7 @@
       v-model:show="showModal"
       preset="dialog"
       transform-origin="center"
-      :title="isNewRef ? '新建用户' : '编辑用户'"
+      :title="isNewRef ? '新建部门' : '编辑部门'"
       positive-text="确认"
       negative-text="算了"
       @positive-click="handleConfirmClick"
@@ -18,42 +18,23 @@
         label-width="auto"
         require-mark-placement="right-hanging"
       >
-        <n-form-item label="用户名" path="name">
-          <n-input v-model:value="modalForm.name" placeholder="请输入用户名" />
-        </n-form-item>
-        <n-form-item label="真实姓名" path="realname">
+        <n-form-item label="部门名称" path="name">
           <n-input
-            v-model:value="modalForm.realname"
-            placeholder="请输入真实姓名"
+            v-model:value="modalForm.name"
+            placeholder="请输入部门名称"
           />
         </n-form-item>
-        <n-form-item v-if="isNewRef" label="密码" path="password">
+        <n-form-item label="部门领导" path="leader">
           <n-input
-            v-model:value="modalForm.password"
-            placeholder="请输入密码"
-            type="password"
-            show-password-on="mousedown"
+            v-model:value="modalForm.leader"
+            placeholder="请输入部门领导"
           />
         </n-form-item>
-        <n-form-item label="电话号码" path="cellphone">
-          <n-input
-            v-model:value="modalForm.cellphone"
-            placeholder="请输入电话号码"
-          />
-        </n-form-item>
-        <n-form-item label="选择角色" path="roleId">
+        <n-form-item label="选择上级部门" path="parentId">
           <n-select
-            v-model:value="modalForm.roleId"
-            :options="roleOptions"
-            placeholder="请选择角色"
-            remote
-          />
-        </n-form-item>
-        <n-form-item label="选择部门" path="departmentId">
-          <n-select
-            v-model:value="modalForm.departmentId"
+            v-model:value="modalForm.parentId"
             :options="departmentOptions"
-            placeholder="请选择部门"
+            placeholder="请选择上级部门"
             remote
           />
         </n-form-item>
@@ -90,15 +71,12 @@ defineExpose({ setShowModal })
 
 const modalForm = reactive<any>({
   name: '',
-  realname: '',
-  password: '',
-  cellphone: '',
-  roleId: null,
-  departmentId: null
+  leader: null,
+  parentId: null
 })
 
 const mainStore = useMainStore()
-const { entireRoles, entireDepartments } = storeToRefs(mainStore)
+const { entireDepartments } = storeToRefs(mainStore)
 
 function entireToOptions(entire: any) {
   return entire.value.map((item: any) => {
@@ -109,15 +87,14 @@ function entireToOptions(entire: any) {
   })
 }
 
-const roleOptions = computed(() => entireToOptions(entireRoles))
 const departmentOptions = computed(() => entireToOptions(entireDepartments))
 
 const systemStore = useSystemStore()
 function handleConfirmClick() {
   if (!isNewRef.value && editForm.value) {
-    systemStore.editUserDataAction(editForm.value.id, modalForm)
+    systemStore.editPageDataAction('department', editForm.value.id, modalForm)
   } else {
-    systemStore.newUserDataAction(modalForm)
+    systemStore.newPageDataAction('department', modalForm)
   }
 }
 function handleCancelClick() {}

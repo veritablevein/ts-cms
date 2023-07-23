@@ -1,0 +1,88 @@
+<template>
+  <div class="search">
+    <n-card>
+      <n-form
+        ref="formRef"
+        :model="searchForm"
+        size="large"
+        label-placement="left"
+        label-width="auto"
+        require-mark-placement="right-hanging"
+      >
+        <n-grid :cols="24" :x-gap="24">
+          <n-form-item-gi :span="8" label="部门名称" path="name">
+            <n-input
+              v-model:value="searchForm.name"
+              placeholder="请输入查询的部门名称"
+            />
+          </n-form-item-gi>
+          <n-form-item-gi :span="8" label="部门领导" path="leader">
+            <n-input
+              v-model:value="searchForm.leader"
+              placeholder="请输入查询的部门领导"
+            />
+          </n-form-item-gi>
+          <n-form-item-gi :span="8" label="创建时间" path="createAt">
+            <n-date-picker
+              v-model:value="searchForm.createAt"
+              type="daterange"
+              clearable
+            />
+          </n-form-item-gi>
+        </n-grid>
+      </n-form>
+      <n-space justify="end" class="btn">
+        <n-button @click="handleResetClick">
+          <n-icon>
+            <refresh-icon />
+          </n-icon>
+          重置
+        </n-button>
+        <n-button type="primary" @click="handleQueryClick">
+          <n-icon>
+            <search-icon />
+          </n-icon>
+          查询
+        </n-button>
+      </n-space>
+    </n-card>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+
+const searchForm = reactive({
+  name: '',
+  leader: '',
+  createAt: null
+})
+
+const emit = defineEmits(['queryClick', 'resetClick'])
+
+function handleResetClick() {
+  searchForm.name = ''
+  searchForm.leader = ''
+  searchForm.createAt = null
+
+  emit('resetClick')
+}
+
+function handleQueryClick() {
+  emit('queryClick', searchForm)
+}
+</script>
+
+<style scoped lang="less">
+.search {
+  padding: 20px;
+
+  :deep(.n-form-item) {
+    padding: 8px 20px;
+  }
+
+  .btn {
+    margin-right: 20px;
+  }
+}
+</style>

@@ -52,4 +52,7 @@ export interface IUserMenusItem {
 export interface ISystemState {
   usersList: IUserInfo[]
   usersTotalCount: number
+
+  pageList: any[]
+  pageTotalCount: number
 }
