@@ -4,7 +4,9 @@
       v-model:show="showModal"
       preset="dialog"
       transform-origin="center"
-      :title="isNewRef ? '新建部门' : '编辑部门'"
+      :title="
+        isNewRef ? modalConfig.header.newTitle : modalConfig.header.editTitle
+      "
       positive-text="确认"
       negative-text="算了"
       @positive-click="handleConfirmClick"
@@ -18,26 +20,30 @@
         label-width="auto"
         require-mark-placement="right-hanging"
       >
-        <n-form-item label="部门名称" path="name">
-          <n-input
-            v-model:value="modalForm.name"
-            placeholder="请输入部门名称"
-          />
-        </n-form-item>
-        <n-form-item label="部门领导" path="leader">
-          <n-input
-            v-model:value="modalForm.leader"
-            placeholder="请输入部门领导"
-          />
-        </n-form-item>
-        <n-form-item label="选择上级部门" path="parentId">
-          <n-select
-            v-model:value="modalForm.parentId"
-            :options="departmentOptions"
-            placeholder="请选择上级部门"
-            remote
-          />
-        </n-form-item>
+        <template v-for="item in modalConfig.formItems" :key="item.prop">
+          <n-form-item :label="item.label" :path="item.prop">
+            <template v-if="item.type === 'input'">
+              <n-input
+                v-model:value="modalForm[item.prop]"
+                :placeholder="item.placeholder"
+              />
+            </template>
+            <template v-if="item.type === 'select'">
+              <n-select
+                v-model:value="modalForm[item.prop]"
+                :placeholder="item.placeholder"
+                :options="item.options"
+              />
+            </template>
+            <template v-if="item.type === 'date-picker'">
+              <n-date-picker
+                v-model:value="modalForm[item.prop]"
+                type="daterange"
+                clearable
+              />
+            </template>
+          </n-form-item>
+        </template>
       </n-form>
     </n-modal>
   </div>
@@ -48,6 +54,14 @@ import { computed, reactive, ref } from 'vue'
 import useMainStore from '@/stores/main/main'
 import { storeToRefs } from 'pinia'
 import useSystemStore from '@/stores/main/system/system'
+import type { IModalProps } from './types'
+
+const props = defineProps<IModalProps>()
+const initialForm: any = {}
+for (const item of props.modalConfig.formItems) {
+  initialForm[item.prop] = item.initialValue ?? null
+}
+const modalForm = reactive<any>(initialForm)
 
 const isNewRef = ref(true)
 const editForm = ref()
@@ -62,18 +76,13 @@ function setShowModal(isNew: boolean = true, rowData?: any) {
     editForm.value = rowData
   } else {
     for (const key in modalForm) {
-      modalForm[key] = null
+      const item = props.modalConfig.formItems.find(item => item.prop === key)
+      modalForm[key] = item ? item.initialValue : null
     }
     editForm.value = null
   }
 }
 defineExpose({ setShowModal })
-
-const modalForm = reactive<any>({
-  name: '',
-  leader: null,
-  parentId: null
-})
 
 const mainStore = useMainStore()
 const { entireDepartments } = storeToRefs(mainStore)
@@ -92,9 +101,13 @@ const departmentOptions = computed(() => entireToOptions(entireDepartments))
 const systemStore = useSystemStore()
 function handleConfirmClick() {
   if (!isNewRef.value && editForm.value) {
-    systemStore.editPageDataAction('department', editForm.value.id, modalForm)
+    systemStore.editPageDataAction(
+      props.modalConfig.pageName,
+      editForm.value.id,
+      modalForm
+    )
   } else {
-    systemStore.newPageDataAction('department', modalForm)
+    systemStore.newPageDataAction(props.modalConfig.pageName, modalForm)
   }
 }
 function handleCancelClick() {}

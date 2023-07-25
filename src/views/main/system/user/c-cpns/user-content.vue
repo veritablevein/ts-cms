@@ -191,6 +191,12 @@ function fetchUsersListData(formData: any = {}) {
   const info = { size, offset }
 
   const queryInfo = { ...info, ...formData }
+
+  for (const key in queryInfo) {
+    if (queryInfo[key] === null) {
+      delete queryInfo[key]
+    }
+  }
   queryInfo.createAt = queryInfo.createAt?.map((item: any) =>
     new Date(item + 28800000).toISOString()
   )

@@ -1,38 +1,50 @@
 <template>
   <div class="department">
     <page-search
+      :search-config="searchConfig"
       @reset-click="handleResetClick"
       @query-click="handleQueryClick"
     />
     <page-content
+      :content-config="contentConfig"
       ref="contentRef"
       @new-click="handleNewClick"
       @edit-click="handleEditClick"
     />
-    <page-modal ref="modalRef" />
+    <page-modal :modal-config="modalConfigRef" ref="modalRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import PageSearch from './c-cpns/page-search.vue'
-import PageContent from './c-cpns/page-content.vue'
-import PageModal from './c-cpns/page-modal.vue'
-import { ref } from 'vue'
+import PageSearch from '@/components/page-search/page-search.vue'
+import PageContent from '@/components/page-content/page-content.vue'
+import PageModal from '@/components/page-modal/page-modal.vue'
+import { computed, ref } from 'vue'
+import searchConfig from './config/search.config'
+import contentConfig from './config/content.config'
+import modalConfig from './config/modal.config'
+import useMainStore from '@/stores/main/main'
+import usePageContent from '@/hooks/usePageContent'
+import usePageModal from '@/hooks/usePageModal'
 
-const contentRef = ref<InstanceType<typeof PageContent>>()
-function handleResetClick() {
-  contentRef.value?.fetchPageListData()
-}
-function handleQueryClick(formData: any) {
-  contentRef.value?.fetchPageListData(formData)
-}
-const modalRef = ref<InstanceType<typeof PageModal>>()
-function handleNewClick() {
-  modalRef.value?.setShowModal()
-}
-function handleEditClick(rowData: any) {
-  modalRef.value?.setShowModal(false, rowData)
-}
+const modalConfigRef = computed(() => {
+  const mainStore = useMainStore()
+  const departments = mainStore.entireDepartments.map(item => ({
+    label: item.name,
+    value: item.id
+  }))
+  modalConfig.formItems.forEach(item => {
+    if (item.prop === 'parentId') {
+      item.options.push(...departments)
+    }
+  })
+
+  return modalConfig
+})
+
+const { contentRef, handleResetClick, handleQueryClick } = usePageContent()
+
+const { modalRef, handleNewClick, handleEditClick } = usePageModal()
 </script>
 
 <style scoped lang="less">
