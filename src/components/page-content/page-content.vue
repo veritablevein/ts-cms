@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import useSystemStore from '@/stores/main/system/system'
 import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
-import { NButton, NIcon, NTag, useDialog } from 'naive-ui'
+import { NButton, NIcon, NImage, NTag, useDialog } from 'naive-ui'
 import { h, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
@@ -76,7 +76,10 @@ const createColumns = (): DataTableColumns<any> => {
         render: (_: any, index: any) => {
           return `${index + 1}`
         },
-        align: 'center'
+        align: 'center',
+        resizable: item.resizable,
+        minWidth: item.minWidth,
+        maxWidth: item.maxWidth
       }
     } else if (item.type === 'selection') {
       return {
@@ -84,13 +87,31 @@ const createColumns = (): DataTableColumns<any> => {
         disabled(row: any) {
           return row.id === 1
         },
-        align: 'center'
+        align: 'center',
+        resizable: item.resizable,
+        minWidth: item.minWidth,
+        maxWidth: item.maxWidth
+      }
+    } else if (item.type === 'image') {
+      return {
+        title: item.title,
+        key: item.key,
+        render(row: any) {
+          return h(NImage, { width: 50, src: row[item.key] })
+        },
+        align: 'center',
+        resizable: item.resizable,
+        minWidth: item.minWidth,
+        maxWidth: item.maxWidth
       }
     } else if (item.type === 'time') {
       return {
         title: item.title,
         key: item.key,
         align: 'center',
+        resizable: item.resizable,
+        minWidth: item.minWidth,
+        maxWidth: item.maxWidth,
         render(row: any) {
           return formatUTC(row[item.key])
         }
@@ -99,6 +120,9 @@ const createColumns = (): DataTableColumns<any> => {
       return {
         title: item.title,
         key: '',
+        resizable: item.resizable,
+        minWidth: item.minWidth,
+        maxWidth: item.maxWidth,
         render(row: any) {
           return [
             h(
@@ -153,7 +177,10 @@ const createColumns = (): DataTableColumns<any> => {
       return {
         title: item.title,
         key: item.key,
-        align: 'center'
+        align: 'center',
+        resizable: item.resizable,
+        minWidth: item.minWidth,
+        maxWidth: item.maxWidth
       }
     }
   })

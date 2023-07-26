@@ -4,6 +4,9 @@ export interface IColumn {
   key: string
   align?: 'left' | 'right' | 'center' | undefined
   dialogContent?: string
+  resizable?: boolean
+  minWidth?: number
+  maxWidth?: number
 }
 
 export interface IContentProps {
