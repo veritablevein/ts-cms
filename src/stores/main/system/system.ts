@@ -53,13 +53,13 @@ const useSystemStore = defineStore('system', {
       console.log(deleteResult)
       this.postPageListAction(pageName, { size: 10, offset: 0 })
     },
-    async newPageDataAction(pageName: string, userInfo: any) {
-      const newResult = await newPageData(pageName, userInfo)
+    async newPageDataAction(pageName: string, pageInfo: any) {
+      const newResult = await newPageData(pageName, pageInfo)
       console.log(newResult)
       this.postPageListAction(pageName, { size: 10, offset: 0 })
     },
-    async editPageDataAction(pageName: string, id: number, userInfo: any) {
-      const editResult = await editPageData(pageName, id, userInfo)
+    async editPageDataAction(pageName: string, id: number, pageInfo: any) {
+      const editResult = await editPageData(pageName, id, pageInfo)
       console.log(editResult)
       this.postPageListAction(pageName, { size: 10, offset: 0 })
     }

@@ -47,9 +47,9 @@ export function newPageData(pageName: string, pageInfo: any) {
   })
 }
 
-export function editPageData(pageName: string, id: number, userInfo: any) {
+export function editPageData(pageName: string, id: number, pageInfo: any) {
   return myRequest.patch({
     url: `/${pageName}/${id}`,
-    data: userInfo
+    data: pageInfo
   })
 }

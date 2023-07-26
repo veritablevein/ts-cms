@@ -42,6 +42,9 @@
                 clearable
               />
             </template>
+            <template v-if="item.type === 'custom'">
+              <slot :name="item.slotName"></slot>
+            </template>
           </n-form-item>
         </template>
       </n-form>
@@ -50,9 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
-import useMainStore from '@/stores/main/main'
-import { storeToRefs } from 'pinia'
+import { reactive, ref } from 'vue'
 import useSystemStore from '@/stores/main/system/system'
 import type { IModalProps } from './types'
 
@@ -84,30 +85,20 @@ function setShowModal(isNew: boolean = true, rowData?: any) {
 }
 defineExpose({ setShowModal })
 
-const mainStore = useMainStore()
-const { entireDepartments } = storeToRefs(mainStore)
-
-function entireToOptions(entire: any) {
-  return entire.value.map((item: any) => {
-    return {
-      label: item.name,
-      value: item.id
-    }
-  })
-}
-
-const departmentOptions = computed(() => entireToOptions(entireDepartments))
-
 const systemStore = useSystemStore()
 function handleConfirmClick() {
+  let info = modalForm
+  if (props.otherInfo) {
+    info = { ...info, ...props.otherInfo }
+  }
   if (!isNewRef.value && editForm.value) {
     systemStore.editPageDataAction(
       props.modalConfig.pageName,
       editForm.value.id,
-      modalForm
+      info
     )
   } else {
-    systemStore.newPageDataAction(props.modalConfig.pageName, modalForm)
+    systemStore.newPageDataAction(props.modalConfig.pageName, info)
   }
 }
 function handleCancelClick() {}
