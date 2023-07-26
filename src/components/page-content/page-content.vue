@@ -90,7 +90,7 @@ const createColumns = (): DataTableColumns<any> => {
       return {
         title: item.title,
         key: item.key,
-        align: item.align,
+        align: 'center',
         render(row: any) {
           return formatUTC(row[item.key])
         }
@@ -153,7 +153,7 @@ const createColumns = (): DataTableColumns<any> => {
       return {
         title: item.title,
         key: item.key,
-        align: item.align
+        align: 'center'
       }
     }
   })
