@@ -4,7 +4,7 @@
       <template #header>
         <n-space justify="space-between">
           <h3>{{ contentConfig?.header?.title ?? '数据列表' }}</h3>
-          <n-button type="primary" @click="handleNewUserClick">
+          <n-button v-if="isCreate" type="primary" @click="handleNewUserClick">
             {{ contentConfig?.header?.btnTitle ?? '新建数据' }}
           </n-button>
         </n-space>
@@ -43,11 +43,16 @@ import { formatUTC } from '@/utils/format'
 import EditIcon from '@/components/icons/edit-icon.vue'
 import DeleteIcon from '@/components/icons/delete-icon.vue'
 import type { IContentProps } from './types'
+import usePermissions from '@/hooks/usePermissions'
 
 const props = defineProps<IContentProps>()
 
 const dialog = useDialog()
 const emit = defineEmits(['newClick', 'editClick'])
+
+const isCreate = usePermissions(`${props.contentConfig.pageName}:create`)
+const isDelete = usePermissions(`${props.contentConfig.pageName}:delete`)
+const isUpdate = usePermissions(`${props.contentConfig.pageName}:update`)
 
 const systemStore = useSystemStore()
 
@@ -125,50 +130,54 @@ const createColumns = (): DataTableColumns<any> => {
         maxWidth: item.maxWidth,
         render(row: any) {
           return [
-            h(
-              NButton,
-              {
-                size: 'small',
-                text: true,
-                type: 'primary',
-                style: {
-                  marginRight: '6px'
-                },
-                renderIcon: () =>
-                  h(NIcon, null, { default: () => h(EditIcon) }),
-                onClick: () => emit('editClick', row)
-              },
-              { default: () => '编辑' }
-            ),
+            isUpdate
+              ? h(
+                  NButton,
+                  {
+                    size: 'small',
+                    text: true,
+                    type: 'primary',
+                    style: {
+                      marginRight: '6px'
+                    },
+                    renderIcon: () =>
+                      h(NIcon, null, { default: () => h(EditIcon) }),
+                    onClick: () => emit('editClick', row)
+                  },
+                  { default: () => '编辑' }
+                )
+              : null,
 
-            h(
-              NButton,
-              {
-                size: 'small',
-                text: true,
-                type: 'error',
-                style: {
-                  marginLeft: '6px'
-                },
-                renderIcon: () =>
-                  h(NIcon, null, { default: () => h(DeleteIcon) }),
-                onClick: () => {
-                  dialog.warning({
-                    title: '警告',
-                    content: item.dialogContent ?? '确定删除数据吗？',
-                    positiveText: '确定',
-                    negativeText: '算了',
-                    onPositiveClick: () => {
-                      systemStore.deletePageByIdAction(
-                        props.contentConfig.pageName,
-                        row.id!
-                      )
+            isDelete
+              ? h(
+                  NButton,
+                  {
+                    size: 'small',
+                    text: true,
+                    type: 'error',
+                    style: {
+                      marginLeft: '6px'
+                    },
+                    renderIcon: () =>
+                      h(NIcon, null, { default: () => h(DeleteIcon) }),
+                    onClick: () => {
+                      dialog.warning({
+                        title: '警告',
+                        content: item.dialogContent ?? '确定删除数据吗？',
+                        positiveText: '确定',
+                        negativeText: '算了',
+                        onPositiveClick: () => {
+                          systemStore.deletePageByIdAction(
+                            props.contentConfig.pageName,
+                            row.id!
+                          )
+                        }
+                      })
                     }
-                  })
-                }
-              },
-              { default: () => '删除' }
-            )
+                  },
+                  { default: () => '删除' }
+                )
+              : null
           ]
         },
         align: 'center'

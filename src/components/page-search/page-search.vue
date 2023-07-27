@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <div class="search" v-if="isQuery">
     <n-card>
       <n-form
         ref="formRef"
@@ -56,12 +56,14 @@
 </template>
 
 <script setup lang="ts">
-import type { SelectGroupOption, SelectOption } from 'naive-ui'
 import { reactive } from 'vue'
 import type { ISearchProps } from './types'
+import usePermissions from '@/hooks/usePermissions'
 
 const emit = defineEmits(['queryClick', 'resetClick'])
 const props = defineProps<ISearchProps>()
+
+const isQuery = usePermissions(`${props.searchConfig.pageName}:query`)
 
 const initialForm: any = {}
 for (const item of props.searchConfig.formItems) {

@@ -9,6 +9,7 @@ export interface formItem {
 
 export interface ISearchProps {
   searchConfig: {
+    pageName: string
     formItems: formItem[]
   }
 }

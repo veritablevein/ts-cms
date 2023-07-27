@@ -7,7 +7,7 @@ import {
 } from '@/services/login/login'
 import type { IAccount, IUserInfo, IUserMenus } from '@/types'
 import { localCache } from '@/utils/cache'
-import { mapMenusToRoutes } from '@/utils/map-menus'
+import { mapMenusToPermissions, mapMenusToRoutes } from '@/utils/map-menus'
 import { defineStore } from 'pinia'
 import useMainStore from '../main/main'
 
@@ -15,13 +15,15 @@ interface ILoginState {
   token: string
   userInfo: IUserInfo
   userMenus: IUserMenus
+  permissions: string[]
 }
 
 const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
     token: '',
     userInfo: {},
-    userMenus: []
+    userMenus: [],
+    permissions: []
   }),
   actions: {
     async loginAccountAction(account: IAccount) {
@@ -46,6 +48,9 @@ const useLoginStore = defineStore('login', {
       const mainStore = useMainStore()
       mainStore.fetchEntireDataAction()
 
+      const permissions = mapMenusToPermissions(userMenus)
+      this.permissions = permissions
+
       const routes = mapMenusToRoutes(userMenus)
       routes.forEach(route => router.addRoute('main', route))
 
@@ -63,6 +68,9 @@ const useLoginStore = defineStore('login', {
 
         const mainStore = useMainStore()
         mainStore.fetchEntireDataAction()
+
+        const permissions = mapMenusToPermissions(userMenus)
+        this.permissions = permissions
 
         const routes = mapMenusToRoutes(userMenus)
         routes.forEach(route => router.addRoute('main', route))

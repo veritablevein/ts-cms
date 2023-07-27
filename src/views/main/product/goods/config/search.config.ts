@@ -1,4 +1,5 @@
 const searchConfig = {
+  pageName: 'goods',
   formItems: [
     {
       type: 'input',
