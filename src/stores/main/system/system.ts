@@ -10,6 +10,7 @@ import {
 } from '@/services/main/system/system'
 import type { ISystemState } from '@/types'
 import { defineStore } from 'pinia'
+import useMainStore from '../main'
 
 const useSystemStore = defineStore('system', {
   state: (): ISystemState => ({
@@ -49,19 +50,40 @@ const useSystemStore = defineStore('system', {
       this.pageList = list
     },
     async deletePageByIdAction(pageName: string, id: number) {
-      const deleteResult = await deletePageById(pageName, id)
-      console.log(deleteResult)
-      this.postPageListAction(pageName, { size: 10, offset: 0 })
+      try {
+        const deleteResult = await deletePageById(pageName, id)
+        console.log(deleteResult)
+        this.postPageListAction(pageName, { size: 10, offset: 0 })
+
+        const mainStore = useMainStore()
+        mainStore.fetchEntireDataAction()
+      } catch (error) {
+        console.log(error)
+      }
     },
     async newPageDataAction(pageName: string, pageInfo: any) {
-      const newResult = await newPageData(pageName, pageInfo)
-      console.log(newResult)
-      this.postPageListAction(pageName, { size: 10, offset: 0 })
+      try {
+        const newResult = await newPageData(pageName, pageInfo)
+        console.log(newResult)
+        this.postPageListAction(pageName, { size: 10, offset: 0 })
+
+        const mainStore = useMainStore()
+        mainStore.fetchEntireDataAction()
+      } catch (error) {
+        console.log(error)
+      }
     },
     async editPageDataAction(pageName: string, id: number, pageInfo: any) {
-      const editResult = await editPageData(pageName, id, pageInfo)
-      console.log(editResult)
-      this.postPageListAction(pageName, { size: 10, offset: 0 })
+      try {
+        const editResult = await editPageData(pageName, id, pageInfo)
+        console.log(editResult)
+        this.postPageListAction(pageName, { size: 10, offset: 0 })
+
+        const mainStore = useMainStore()
+        mainStore.fetchEntireDataAction()
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 })

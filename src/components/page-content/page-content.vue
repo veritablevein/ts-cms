@@ -59,6 +59,18 @@ const systemStore = useSystemStore()
 const page = ref(1)
 const pageSize = ref(10)
 
+systemStore.$onAction(({ name, after }) => {
+  after(() => {
+    if (
+      name === 'newPageDataAction' ||
+      name === 'deletePageByIdAction' ||
+      name === 'editPageDataAction'
+    ) {
+      page.value = 1
+    }
+  })
+})
+
 fetchPageListData()
 
 const { pageList, pageTotalCount } = storeToRefs(systemStore)
@@ -215,6 +227,10 @@ function fetchPageListData(formData: any = {}) {
   for (const key in queryInfo) {
     if (queryInfo[key] === null) {
       delete queryInfo[key]
+    } else if (queryInfo.name) {
+      page.value = 1
+      delete queryInfo['size']
+      delete queryInfo['offset']
     }
   }
   queryInfo.createAt = queryInfo.createAt?.map((item: any) =>

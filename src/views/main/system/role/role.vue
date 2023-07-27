@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { NTree } from 'naive-ui'
 import PageSearch from '@/components/page-search/page-search.vue'
@@ -63,16 +63,20 @@ function updateIndeterminateKeys(keys: Array<string | number>) {
   indeterminateKeys.value = keys
 }
 
+function newCallback() {
+  checkedKeys.value = []
+}
+
 function editCallback(rowData: any) {
-  nextTick(() => {
-    checkedKeys.value = mapMenuListToIds(rowData.menuList)
-    console.log(checkedKeys.value)
-  })
+  checkedKeys.value = mapMenuListToIds(rowData.menuList)
 }
 
 const { contentRef, handleResetClick, handleQueryClick } = usePageContent()
 
-const { modalRef, handleNewClick, handleEditClick } = usePageModal(editCallback)
+const { modalRef, handleNewClick, handleEditClick } = usePageModal(
+  newCallback,
+  editCallback
+)
 </script>
 
 <style scoped lang="less">
