@@ -1,7 +1,7 @@
 let BASE_URL = ''
 
 if (import.meta.env.PROD) {
-  BASE_URL = 'http://codercba.com:4000'
+  BASE_URL = 'http://codercba.com:5000'
 } else {
   BASE_URL = 'http://codercba.com:5000'
 }
